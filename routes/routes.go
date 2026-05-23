@@ -18,5 +18,6 @@ func SetupRoutes(router *gin.Engine){
 	otpRoutes:= router.Group("api/v1/otp")
 	{
 		otpRoutes.POST("/send",handlers.SendOTP)
+		otpRoutes.POST("/verify", handlers.VerifyOTP)
 	}
 }

@@ -31,3 +31,10 @@ func HashOTP(otp string) (string,error){
 	}
 	return string(hashedOTP), nil
 }
+
+func CompareOTP(hashedOTP string,plainOTP string) (error) {
+	return bcrypt.CompareHashAndPassword(
+		[]byte(hashedOTP),
+		[]byte(plainOTP),
+	)
+}

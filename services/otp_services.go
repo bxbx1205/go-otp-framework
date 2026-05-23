@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 	"otp-service/config"
 	"otp-service/utils"
@@ -29,8 +30,37 @@ func SendOTP(phone string) error{
 
 
 	// Print OTP temporarily
-	// Later SMS provider will send this
 	fmt.Println("Generated OTP:", otp)
+
+
+	return nil
+}
+
+func VerifyOTP(phone string,enteredOTP string,) (error){
+	key:=fmt.Sprintf("otp:%s",phone)
+
+
+	storedHash,err:=config.RedisClient.Get(config.Ctx,key,).Result()
+
+	if err != nil {
+		return errors.New("OTP expired or not found")
+	}
+
+	err = utils.CompareOTP(
+		storedHash,
+		enteredOTP,
+	)
+
+	if err != nil {
+
+		return errors.New("invalid OTP")
+	}
+
+	err=config.RedisClient.Del(config.Ctx,key).Err()
+
+	if err != nil {
+		return err
+	}
 
 
 	return nil

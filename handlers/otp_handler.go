@@ -41,3 +41,39 @@ func SendOTP(c *gin.Context){
 
 
 }
+func VerifyOTP(c *gin.Context) {
+
+	var request models.VerifyOTPRequest
+
+
+	err := c.ShouldBindJSON(&request)
+
+	if err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid request body",
+		})
+
+		return
+	}
+
+
+	err = services.VerifyOTP(
+		request.Phone,
+		request.OTP,
+	)
+
+	if err != nil {
+
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "OTP verified successfully",
+	})
+}
