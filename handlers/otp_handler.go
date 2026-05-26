@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"otp-service/models"
 	"otp-service/services"
+	"otp-service/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,9 +16,11 @@ func SendOTP(c *gin.Context){
 	err:= c.ShouldBindJSON(&request)
 
 	if err!=nil {
-		c.JSON(http.StatusBadRequest,gin.H{
-			"error":"Invalid Request Body",
-		})
+		utils.ErrorResponse(
+			c,
+			http.StatusBadRequest,
+			"invalid request body",
+		)
 
 		return
 
@@ -27,16 +30,20 @@ func SendOTP(c *gin.Context){
 
 	if err != nil {
 
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to send OTP",
-		})
+		utils.ErrorResponse(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
 
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "OTP sent successfully",
-	})
+	utils.SuccessResponse(
+		c,
+		http.StatusOK,
+		"OTP sent successfully",
+		nil,
+	)
 
 
 

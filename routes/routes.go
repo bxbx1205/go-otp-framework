@@ -6,18 +6,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(router *gin.Engine){
+func SetupRoutes(router *gin.Engine) {
 
-	router.GET("/health",func(c *gin.Context) {
+	router.GET(
+		"/health",
+		handlers.HealthCheck,
+	)
 
-		c.JSON(200,gin.H{
-			"Message":"Server running",
+	router.GET("/health", func(c *gin.Context) {
+
+		c.JSON(200, gin.H{
+			"Message": "Server running",
 		})
 	})
 
-	otpRoutes:= router.Group("api/v1/otp")
+	otpRoutes := router.Group("api/v1/otp")
 	{
-		otpRoutes.POST("/send",handlers.SendOTP)
+		otpRoutes.POST("/send", handlers.SendOTP)
 		otpRoutes.POST("/verify", handlers.VerifyOTP)
 	}
 }
