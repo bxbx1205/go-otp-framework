@@ -12,7 +12,6 @@ import (
 )
 
 const (
-
 	otpTTL = 5 * time.Minute
 
 	cooldownTTL = 30 * time.Second
@@ -23,7 +22,6 @@ const (
 
 	maxVerifyAttempts = 5
 )
-
 
 func SendOTP(phone string) error {
 
@@ -61,7 +59,6 @@ func SendOTP(phone string) error {
 		)
 	}
 
-
 	cooldownKey := fmt.Sprintf(
 		"cooldown:%s",
 		phone,
@@ -91,7 +88,6 @@ func SendOTP(phone string) error {
 		return err
 	}
 
-
 	key := fmt.Sprintf(
 		"otp:%s",
 		phone,
@@ -119,20 +115,26 @@ func SendOTP(phone string) error {
 		return err
 	}
 
+	smsJob := models.SMSJob{
 
-	// TEMPORARY
-	// Later SMS provider will send OTP
-	fmt.Println("Generated OTP:", otp)
+		Phone: phone,
+
+		OTP: otp,
+	}
+
+	err = PushSMSJob(smsJob)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
-
 
 func VerifyOTP(
 	phone string,
 	enteredOTP string,
 ) error {
-
 
 	key := fmt.Sprintf(
 		"otp:%s",
@@ -150,7 +152,6 @@ func VerifyOTP(
 			"OTP expired or not found",
 		)
 	}
-
 
 	attemptKey := fmt.Sprintf(
 		"attempts:%s",
@@ -175,7 +176,6 @@ func VerifyOTP(
 		)
 	}
 
-
 	err = utils.CompareOTP(
 		storedHash,
 		enteredOTP,
@@ -199,7 +199,6 @@ func VerifyOTP(
 			)
 		}
 
-
 		failedLog := models.OTPLog{
 			Phone:     phone,
 			Status:    "failed",
@@ -213,7 +212,6 @@ func VerifyOTP(
 		)
 	}
 
-
 	err = config.RedisClient.Del(
 		config.Ctx,
 		key,
@@ -223,12 +221,10 @@ func VerifyOTP(
 		return err
 	}
 
-
 	config.RedisClient.Del(
 		config.Ctx,
 		attemptKey,
 	)
-
 
 	user := models.User{
 		Phone:     phone,
