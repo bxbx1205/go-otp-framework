@@ -13,12 +13,6 @@ func SetupRoutes(router *gin.Engine) {
 		handlers.HealthCheck,
 	)
 
-	router.GET("/health", func(c *gin.Context) {
-
-		c.JSON(200, gin.H{
-			"Message": "Server running",
-		})
-	})
 
 	otpRoutes := router.Group("api/v1/otp")
 	{

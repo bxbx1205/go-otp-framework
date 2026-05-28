@@ -12,7 +12,7 @@ import (
 	"otp-service/routes"
 	"syscall"
 	"time"
-
+	"otp-service/workers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,6 +31,10 @@ func main() {
 	routes.SetupRoutes(router)
 
 	port:=os.Getenv("PORT")
+
+	config.ConnectAWS()
+
+	go workers.StartSMSWorker()
 
 	server := &http.Server{
 
