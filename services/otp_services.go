@@ -3,8 +3,9 @@ package services
 import (
 	"errors"
 	"fmt"
+	
 	"time"
-
+	"otp-service/metrics"
 	"otp-service/config"
 	"otp-service/models"
 	"otp-service/repositories"
@@ -128,6 +129,9 @@ func SendOTP(phone string) error {
 		return err
 	}
 
+	
+	metrics.IncrementOTPSent()
+
 	return nil
 }
 
@@ -237,6 +241,7 @@ func VerifyOTP(
 	if err != nil {
 		return err
 	}
+	metrics.IncrementOTPVerified()
 
 	successLog := models.OTPLog{
 		Phone:     phone,

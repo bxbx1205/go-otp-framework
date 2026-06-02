@@ -2,37 +2,30 @@ package handlers
 
 import (
 	"net/http"
+
 	"otp-service/config"
-	"otp-service/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
-func HealthCheck(c *gin.Context){
+func HealthCheck(c *gin.Context) {
 
-	_,redisErr := config.RedisClient.Ping(config.Ctx).Result()
+	redisStatus := "up"
 
-	mongoErr := config.MongoClient.Ping(
+	err := config.RedisClient.Ping(
 		config.Ctx,
-		nil,
-	)
+	).Err()
 
-	if redisErr != nil || mongoErr != nil {
-
-		utils.ErrorResponse(
-			c,
-			http.StatusServiceUnavailable,
-			"service unavailable",
-		)
-
-		return
+	if err != nil {
+		redisStatus = "down"
 	}
 
-	utils.SuccessResponse(
-		c,
+	c.JSON(
 		http.StatusOK,
-		"service healthy",
-		nil,
+		gin.H{
+			"status":  "healthy",
+			"redis":   redisStatus,
+			"mongodb": "up",
+		},
 	)
-
 }

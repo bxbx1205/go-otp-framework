@@ -7,25 +7,20 @@ import (
 	"log"
 
 	"otp-service/config"
+	"otp-service/metrics"
 	"otp-service/models"
 	"otp-service/services"
 )
 
-
 const smsQueue = "sms_queue"
-
 
 func StartSMSWorker() {
 
 	fmt.Println("SMS worker started")
 
-
 	for {
 
-	
-
 		fmt.Println("Waiting for queue job...")
-
 
 		result, err := config.RedisClient.BLPop(
 			context.Background(),
@@ -43,12 +38,10 @@ func StartSMSWorker() {
 			continue
 		}
 
-
 		fmt.Println(
 			"Raw Redis result:",
 			result,
 		)
-
 
 		if len(result) < 2 {
 
@@ -59,12 +52,9 @@ func StartSMSWorker() {
 			continue
 		}
 
-
 		jobData := result[1]
 
-
 		var job models.SMSJob
-
 
 		err = json.Unmarshal(
 			[]byte(jobData),
@@ -87,9 +77,8 @@ func StartSMSWorker() {
 		)
 
 		fmt.Println(
-			"Calling AWS SNS...",
+			"Calling SMS Provider...",
 		)
-
 
 		err = services.SendSMS(
 			job.Phone,
@@ -98,15 +87,59 @@ func StartSMSWorker() {
 
 		if err != nil {
 
+			// Metrics
+			metrics.IncrementSMSFailed()
+
 			log.Println(
 				"SMS sending failed:",
 				err,
 			)
 
+			// Increment retry count
+			job.RetryCount++
+
+			// Retry if limit not reached
+			if job.RetryCount <= services.MaxRetries {
+
+				log.Printf(
+					"Retrying job (%d/%d)",
+					job.RetryCount,
+					services.MaxRetries,
+				)
+
+				retryErr := services.RetrySMSJob(job)
+
+				if retryErr != nil {
+
+					log.Println(
+						"Retry queue push failed:",
+						retryErr,
+					)
+				}
+
+				continue
+			}
+
+			// Move to DLQ
+			log.Println(
+				"Max retries reached. Moving to DLQ",
+			)
+
+			dlqErr := services.PushToDLQ(job)
+
+			if dlqErr != nil {
+
+				log.Println(
+					"DLQ push failed:",
+					dlqErr,
+				)
+			}
+
 			continue
 		}
 
-
+		// Metrics
+		metrics.IncrementSMSSuccess()
 
 		fmt.Printf(
 			"OTP sent successfully to %s\n",

@@ -1,32 +1,40 @@
 package services
 
 import (
-	"context"
-	"fmt"
-	"otp-service/config"
-
-	"github.com/aws/aws-sdk-go-v2/service/sns"
+	"errors"
+	"os"
 )
 
 func SendSMS(
-	phone string, otp string,
+	phone string,
+	otp string,
 ) error {
 
-	message := fmt.Sprint("Your OTP is : %s",otp)
-
-	input:=&sns.PublishInput{
-		Message: &message,
-		PhoneNumber: &phone,
-	}
-
-	_,err:= config.SNSClient.Publish(
-		context.Background(),
-		input,
+	provider := os.Getenv(
+		"SMS_PROVIDER",
 	)
 
-	if err!=nil {
-		return err
-	}
+	switch provider {
 
-	return nil
+	case "aws":
+
+		return SendSMSAWS(
+			phone,
+			otp,
+		)
+
+	case "twilio":
+
+		return SendSMSTwilio(
+			phone,
+			otp,
+		)
+
+	default:
+
+		return errors.New(
+			"invalid SMS provider",
+		)
+	}
 }
+

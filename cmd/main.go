@@ -34,6 +34,13 @@ func main() {
 
 	config.ConnectAWS()
 
+	config.ConnectTwilio()
+
+	router.Use(
+	middleware.RequestIDMiddleware(),
+
+)
+
 	go workers.StartSMSWorker()
 
 	server := &http.Server{

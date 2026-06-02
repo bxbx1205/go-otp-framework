@@ -13,6 +13,20 @@ func SetupRoutes(router *gin.Engine) {
 		handlers.HealthCheck,
 	)
 
+	router.GET(
+		"/dlq",
+		handlers.GetDLQ,
+	)
+
+	router.GET(
+	"/metrics",
+	handlers.GetMetrics,
+)
+
+router.GET(
+	"/queue-status",
+	handlers.QueueStatus,
+)
 
 	otpRoutes := router.Group("api/v1/otp")
 	{
