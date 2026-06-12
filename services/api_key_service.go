@@ -5,8 +5,8 @@ import (
 	"encoding/hex"
 	"time"
 
-	"github.com/myusername/otp-framework/models"
-	"github.com/myusername/otp-framework/repositories"
+	"github.com/bxbx1205/go-otp-framework/models"
+	"github.com/bxbx1205/go-otp-framework/repositories"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

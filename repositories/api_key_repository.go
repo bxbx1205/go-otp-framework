@@ -3,8 +3,8 @@ package repositories
 import (
 	"context"
 
-	"github.com/myusername/otp-framework/config"
-	"github.com/myusername/otp-framework/models"
+	"github.com/bxbx1205/go-otp-framework/config"
+	"github.com/bxbx1205/go-otp-framework/models"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

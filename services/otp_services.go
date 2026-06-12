@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/myusername/otp-framework/config"
-	"github.com/myusername/otp-framework/metrics"
-	"github.com/myusername/otp-framework/models"
-	"github.com/myusername/otp-framework/repositories"
-	"github.com/myusername/otp-framework/utils"
+	"github.com/bxbx1205/go-otp-framework/config"
+	"github.com/bxbx1205/go-otp-framework/metrics"
+	"github.com/bxbx1205/go-otp-framework/models"
+	"github.com/bxbx1205/go-otp-framework/repositories"
+	"github.com/bxbx1205/go-otp-framework/utils"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"

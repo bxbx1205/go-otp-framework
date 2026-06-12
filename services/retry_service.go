@@ -3,8 +3,8 @@ package services
 import (
 	"encoding/json"
 
-	"github.com/myusername/otp-framework/config"
-	"github.com/myusername/otp-framework/models"
+	"github.com/bxbx1205/go-otp-framework/config"
+	"github.com/bxbx1205/go-otp-framework/models"
 )
 
 func RetrySMSJob(

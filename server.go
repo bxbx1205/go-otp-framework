@@ -5,9 +5,9 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/myusername/otp-framework/config"
-	"github.com/myusername/otp-framework/routes"
-	"github.com/myusername/otp-framework/workers"
+	"github.com/bxbx1205/go-otp-framework/config"
+	"github.com/bxbx1205/go-otp-framework/routes"
+	"github.com/bxbx1205/go-otp-framework/workers"
 )
 
 type Server struct {

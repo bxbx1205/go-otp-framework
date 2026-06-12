@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/myusername/otp-framework/repositories"
+	"github.com/bxbx1205/go-otp-framework/repositories"
 
 	"github.com/gin-gonic/gin"
 )

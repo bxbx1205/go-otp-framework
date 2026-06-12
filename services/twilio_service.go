@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/myusername/otp-framework/config"
+	"github.com/bxbx1205/go-otp-framework/config"
 
 	"github.com/twilio/twilio-go"
 	openapi "github.com/twilio/twilio-go/rest/api/v2010"

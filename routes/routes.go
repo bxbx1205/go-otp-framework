@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"github.com/myusername/otp-framework/handlers"
-	"github.com/myusername/otp-framework/middleware"
+	"github.com/bxbx1205/go-otp-framework/handlers"
+	"github.com/bxbx1205/go-otp-framework/middleware"
 
 	"github.com/gin-gonic/gin"
 )

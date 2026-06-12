@@ -1,4 +1,4 @@
-module github.com/myusername/otp-framework
+module github.com/bxbx1205/go-otp-framework
 
 go 1.26.3
 

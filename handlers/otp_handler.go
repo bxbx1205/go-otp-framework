@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"net/http"
-	"github.com/myusername/otp-framework/models"
-	"github.com/myusername/otp-framework/services"
-	"github.com/myusername/otp-framework/utils"
+	"github.com/bxbx1205/go-otp-framework/models"
+	"github.com/bxbx1205/go-otp-framework/services"
+	"github.com/bxbx1205/go-otp-framework/utils"
 
 	"github.com/gin-gonic/gin"
 )

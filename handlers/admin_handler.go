@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/myusername/otp-framework/config"
-	"github.com/myusername/otp-framework/metrics"
-	"github.com/myusername/otp-framework/repositories"
-	"github.com/myusername/otp-framework/services"
+	"github.com/bxbx1205/go-otp-framework/config"
+	"github.com/bxbx1205/go-otp-framework/metrics"
+	"github.com/bxbx1205/go-otp-framework/repositories"
+	"github.com/bxbx1205/go-otp-framework/services"
 
 	"github.com/gin-gonic/gin"
 )

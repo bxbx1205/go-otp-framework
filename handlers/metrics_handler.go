@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/myusername/otp-framework/metrics"
+	"github.com/bxbx1205/go-otp-framework/metrics"
 
 	"github.com/gin-gonic/gin"
 )
