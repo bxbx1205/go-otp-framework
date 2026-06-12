@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"log"
 
-	"otp-service/config"
-	"otp-service/metrics"
-	"otp-service/models"
-	"otp-service/services"
+	"github.com/myusername/otp-framework/config"
+	"github.com/myusername/otp-framework/metrics"
+	"github.com/myusername/otp-framework/models"
+	"github.com/myusername/otp-framework/repositories"
+	"github.com/myusername/otp-framework/services"
+	"github.com/myusername/otp-framework/utils"
 )
 
 const smsQueue = "sms_queue"
@@ -71,19 +73,36 @@ func StartSMSWorker() {
 			continue
 		}
 
-		fmt.Println(
-			"Parsed Job:",
-			job,
-		)
+		fmt.Println("Parsed Job:", job)
+		fmt.Println("Calling SMS Provider dynamically...")
 
-		fmt.Println(
-			"Calling SMS Provider...",
-		)
+		providerConfig, err := repositories.GetProviderByUserID(job.UserID.Hex(), "twilio")
+		if err != nil {
+			providerConfig, err = repositories.GetProviderByUserID(job.UserID.Hex(), "aws")
+		}
 
-		err = services.SendSMS(
-			job.Phone,
-			job.OTP,
-		)
+		if err == nil {
+			if providerConfig.Provider == "twilio" {
+				decryptedToken, decErr := utils.Decrypt(providerConfig.EncryptedAuthToken)
+				if decErr == nil {
+					err = services.SendSMSTwilioDynamic(job.Phone, job.OTP, providerConfig.AccountSID, decryptedToken, providerConfig.PhoneNumber)
+				} else {
+					err = decErr
+				}
+			} else if providerConfig.Provider == "aws" {
+				decryptedSecret, decErr := utils.Decrypt(providerConfig.EncryptedSecretKey)
+				if decErr == nil {
+					err = services.SendSMSAWSDynamic(job.Phone, job.OTP, providerConfig.AccessKey, decryptedSecret, providerConfig.Region)
+				} else {
+					err = decErr
+				}
+			} else {
+				err = fmt.Errorf("unknown provider configuration found")
+			}
+		} else {
+			// Fallback to default if no provider configured
+			err = services.SendSMS(job.Phone, job.OTP)
+		}
 
 		if err != nil {
 

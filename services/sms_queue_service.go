@@ -2,8 +2,8 @@ package services
 
 import (
 	"encoding/json"
-	"otp-service/config"
-	"otp-service/models"
+	"github.com/myusername/otp-framework/config"
+	"github.com/myusername/otp-framework/models"
 )
 
 const smsQueue = "sms_queue"

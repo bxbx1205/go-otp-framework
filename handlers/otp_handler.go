@@ -2,20 +2,22 @@ package handlers
 
 import (
 	"net/http"
-	"otp-service/models"
-	"otp-service/services"
-	"otp-service/utils"
+	"github.com/myusername/otp-framework/models"
+	"github.com/myusername/otp-framework/services"
+	"github.com/myusername/otp-framework/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
-func SendOTP(c *gin.Context){
+func SendOTP(c *gin.Context) {
+
+	userID := c.GetString("user_id")
 
 	var request models.SendOTPRequest
 
-	err:= c.ShouldBindJSON(&request)
+	err := c.ShouldBindJSON(&request)
 
-	if err!=nil {
+	if err != nil {
 		utils.ErrorResponse(
 			c,
 			http.StatusBadRequest,
@@ -26,7 +28,7 @@ func SendOTP(c *gin.Context){
 
 	}
 
-	err= services.SendOTP(request.Phone)
+	err = services.SendOTP(userID, request.Phone)
 
 	if err != nil {
 
@@ -45,13 +47,12 @@ func SendOTP(c *gin.Context){
 		nil,
 	)
 
-
-
 }
 func VerifyOTP(c *gin.Context) {
 
-	var request models.VerifyOTPRequest
+	userID := c.GetString("user_id")
 
+	var request models.VerifyOTPRequest
 
 	err := c.ShouldBindJSON(&request)
 
@@ -64,8 +65,8 @@ func VerifyOTP(c *gin.Context) {
 		return
 	}
 
-
-	err = services.VerifyOTP(
+	token, err := services.VerifyOTP(
+		userID,
 		request.Phone,
 		request.OTP,
 	)
@@ -79,8 +80,12 @@ func VerifyOTP(c *gin.Context) {
 		return
 	}
 
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"message": "OTP verified",
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "OTP verified successfully",
-	})
+			"token": token,
+		},
+	)
 }

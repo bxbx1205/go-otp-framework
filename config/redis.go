@@ -3,7 +3,6 @@ package config
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -12,22 +11,22 @@ var Ctx = context.Background()
 
 var RedisClient *redis.Client
 
-func ConnectRedis() {
+func ConnectRedis(addr string) {
 
-		client := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_ADDR"),
-		Password: os.Getenv("REDIS_PASSWORD"),
+	client := redis.NewClient(&redis.Options{
+		Addr:     addr,
+		Password: "", // Keeping this simple, could extend later
 		DB:       0,
 	})
 
-	_,err := client.Ping(Ctx).Result()
+	_, err := client.Ping(Ctx).Result()
 
-	if err!=nil{
+	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("Redis Connected")
 
-	RedisClient=client
+	RedisClient = client
 
 }

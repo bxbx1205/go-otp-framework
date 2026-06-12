@@ -1,26 +1,24 @@
 package config
 
 import (
-	"context"
 	"log"
 
-	awsConfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/sns"
 )
 
 var SNSClient *sns.Client
 
-func ConnectAWS() {
+func ConnectAWS(accessKey string, secretKey string, region string) {
 
-	cfg,err:= awsConfig.LoadDefaultConfig(context.Background(),)
-
-	if err!=nil {
-		log.Fatal("failed to load AWS config : ",err)
+	cfg := aws.Config{
+		Region:      region,
+		Credentials: aws.NewCredentialsCache(credentials.NewStaticCredentialsProvider(accessKey, secretKey, "")),
 	}
 
-	SNSClient=sns.NewFromConfig(cfg)
+	SNSClient = sns.NewFromConfig(cfg)
 
 	log.Println("AWS SNS Connected")
-
 
 }

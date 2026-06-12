@@ -2,17 +2,13 @@ package config
 
 import (
 	"fmt"
-	"os"
 
 	twilio "github.com/twilio/twilio-go"
 )
 
 var TwilioClient *twilio.RestClient
 
-func ConnectTwilio() {
-
-	sid := os.Getenv("TWILIO_ACCOUNT_SID")
-	token := os.Getenv("TWILIO_AUTH_TOKEN")
+func ConnectTwilio(sid string, token string) {
 
 	fmt.Println("Creating Twilio Client...")
 	fmt.Println("SID:", sid)

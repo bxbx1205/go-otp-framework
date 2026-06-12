@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"otp-service/config"
+	"github.com/myusername/otp-framework/config"
 
+	"github.com/twilio/twilio-go"
 	openapi "github.com/twilio/twilio-go/rest/api/v2010"
 )
 
@@ -38,4 +39,21 @@ func SendSMSTwilio(
 	}
 
 	return nil
+}
+
+func SendSMSTwilioDynamic(phone string, otp string, accountSID string, authToken string, fromPhone string) error {
+	client := twilio.NewRestClientWithParams(twilio.ClientParams{
+		Username: accountSID,
+		Password: authToken,
+	})
+
+	message := fmt.Sprintf("Your OTP is %s", otp)
+
+	params := &openapi.CreateMessageParams{}
+	params.SetTo(phone)
+	params.SetFrom(fromPhone)
+	params.SetBody(message)
+
+	_, err := client.Api.CreateMessage(params)
+	return err
 }

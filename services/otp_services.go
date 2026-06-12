@@ -3,13 +3,15 @@ package services
 import (
 	"errors"
 	"fmt"
-	
+
+	"github.com/myusername/otp-framework/config"
+	"github.com/myusername/otp-framework/metrics"
+	"github.com/myusername/otp-framework/models"
+	"github.com/myusername/otp-framework/repositories"
+	"github.com/myusername/otp-framework/utils"
 	"time"
-	"otp-service/metrics"
-	"otp-service/config"
-	"otp-service/models"
-	"otp-service/repositories"
-	"otp-service/utils"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const (
@@ -24,10 +26,11 @@ const (
 	maxVerifyAttempts = 5
 )
 
-func SendOTP(phone string) error {
+func SendOTP(userID string, phone string) error {
 
 	rateKey := fmt.Sprintf(
-		"rate:%s",
+		"rate:%s:%s",
+		userID,
 		phone,
 	)
 
@@ -61,7 +64,8 @@ func SendOTP(phone string) error {
 	}
 
 	cooldownKey := fmt.Sprintf(
-		"cooldown:%s",
+		"cooldown:%s:%s",
+		userID,
 		phone,
 	)
 
@@ -90,7 +94,8 @@ func SendOTP(phone string) error {
 	}
 
 	key := fmt.Sprintf(
-		"otp:%s",
+		"otp:%s:%s",
+		userID,
 		phone,
 	)
 
@@ -116,11 +121,11 @@ func SendOTP(phone string) error {
 		return err
 	}
 
+	objID, _ := primitive.ObjectIDFromHex(userID)
 	smsJob := models.SMSJob{
-
-		Phone: phone,
-
-		OTP: otp,
+		UserID: objID,
+		Phone:  phone,
+		OTP:    otp,
 	}
 
 	err = PushSMSJob(smsJob)
@@ -129,19 +134,20 @@ func SendOTP(phone string) error {
 		return err
 	}
 
-	
 	metrics.IncrementOTPSent()
 
 	return nil
 }
 
 func VerifyOTP(
+	userID string,
 	phone string,
 	enteredOTP string,
-) error {
+) (string, error) {
 
 	key := fmt.Sprintf(
-		"otp:%s",
+		"otp:%s:%s",
+		userID,
 		phone,
 	)
 
@@ -152,7 +158,7 @@ func VerifyOTP(
 
 	if err != nil {
 
-		return errors.New(
+		return "", errors.New(
 			"OTP expired or not found",
 		)
 	}
@@ -170,12 +176,12 @@ func VerifyOTP(
 	if err != nil &&
 		err.Error() != "redis: nil" {
 
-		return err
+		return "", err
 	}
 
 	if attempts >= maxVerifyAttempts {
 
-		return errors.New(
+		return "", errors.New(
 			"too many failed attempts",
 		)
 	}
@@ -211,7 +217,7 @@ func VerifyOTP(
 
 		repositories.CreateOTPLog(failedLog)
 
-		return errors.New(
+		return "", errors.New(
 			"invalid OTP",
 		)
 	}
@@ -222,7 +228,7 @@ func VerifyOTP(
 	).Err()
 
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	config.RedisClient.Del(
@@ -230,17 +236,6 @@ func VerifyOTP(
 		attemptKey,
 	)
 
-	user := models.User{
-		Phone:     phone,
-		Verified:  true,
-		CreatedAt: time.Now(),
-	}
-
-	err = repositories.CreateUser(user)
-
-	if err != nil {
-		return err
-	}
 	metrics.IncrementOTPVerified()
 
 	successLog := models.OTPLog{
@@ -251,5 +246,9 @@ func VerifyOTP(
 
 	repositories.CreateOTPLog(successLog)
 
-	return nil
+	// Since this is a SaaS platform, we do not register the end user in the tenant's auth table
+	// We simply return a success token or confirmation. We'll return "verified".
+	token := "valid"
+
+	return token, nil
 }

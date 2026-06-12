@@ -2,26 +2,42 @@ package repositories
 
 import (
 	"context"
-	"otp-service/config"
-	"otp-service/models"
 
-	"go.mongodb.org/mongo-driver/mongo"
+	"github.com/myusername/otp-framework/config"
+	"github.com/myusername/otp-framework/models"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
-func getOTPLogCollection() *mongo.Collection {
-	return config.MongoClient.
-		Database("otp_service").
-		Collection("otp_logs")
+func GetAllOTPLogs() (
+	[]models.OTPLog,
+	error,
+) {
+
+	var logs []models.OTPLog
+	cursor, err :=
+		config.OTPLogCollection.Find(
+			context.Background(),
+			bson.M{},
+		)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = cursor.All(
+		context.Background(),
+		&logs,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return logs, nil
 }
 
 func CreateOTPLog(log models.OTPLog) error {
-
-	collection := getOTPLogCollection()
-
-	_, err := collection.InsertOne(
-		context.Background(),
-		log,
-	)
-
+	_, err := config.OTPLogCollection.InsertOne(context.Background(), log)
 	return err
 }
