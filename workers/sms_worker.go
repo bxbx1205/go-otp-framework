@@ -18,6 +18,11 @@ const smsQueue = "sms_queue"
 
 func StartSMSWorker() {
 
+	if config.RedisClient == nil {
+		fmt.Println("SMS worker not started: RedisClient is nil")
+		return
+	}
+
 	fmt.Println("SMS worker started")
 
 	for {

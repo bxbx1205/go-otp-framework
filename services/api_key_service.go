@@ -3,8 +3,10 @@ package services
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"errors"
 	"time"
 
+	"github.com/bxbx1205/go-otp-framework/config"
 	"github.com/bxbx1205/go-otp-framework/models"
 	"github.com/bxbx1205/go-otp-framework/repositories"
 
@@ -22,7 +24,7 @@ func generateRandomKey() string {
 func CreateAPIKey(userID string, req models.CreateAPIKeyRequest) (models.APIKey, error) {
 	objID, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
-		return models.APIKey{}, err
+		return models.APIKey{}, errors.New("invalid user id")
 	}
 
 	apiKey := models.APIKey{
@@ -33,8 +35,14 @@ func CreateAPIKey(userID string, req models.CreateAPIKeyRequest) (models.APIKey,
 		CreatedAt: time.Now(),
 	}
 
-	err = repositories.CreateAPIKey(apiKey)
-	return apiKey, err
+	if config.APIKeyCollection != nil {
+		err = repositories.CreateAPIKey(apiKey)
+		if err != nil {
+			return models.APIKey{}, err
+		}
+	}
+
+	return apiKey, nil
 }
 
 func ListAPIKeys(userID string) ([]models.APIKey, error) {

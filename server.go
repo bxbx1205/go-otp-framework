@@ -149,6 +149,9 @@ func (s *Server) CreateAPIKey(userID string) (string, error) {
 	if err := s.initialize(); err != nil {
 		return "", err
 	}
+	if userID == "" {
+		userID = DefaultEmbeddedUserID
+	}
 	req := models.CreateAPIKeyRequest{
 		Name: "Programmatic Key",
 	}
