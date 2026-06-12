@@ -1,7 +1,7 @@
 package services
 
 func init() {
-	// Register default static providers which read from global config
+	
 	RegisterProvider(&TwilioProvider{})
 	RegisterProvider(&AWSProvider{})
 }

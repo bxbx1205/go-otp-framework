@@ -246,8 +246,8 @@ func VerifyOTP(
 
 	repositories.CreateOTPLog(successLog)
 
-	// Since this is a SaaS platform, we do not register the end user in the tenant's auth table
-	// We simply return a success token or confirmation. We'll return "verified".
+	
+	
 	token := "valid"
 
 	return token, nil

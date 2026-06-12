@@ -100,13 +100,13 @@ func StartSMSWorker() {
 				err = fmt.Errorf("unknown provider configuration found")
 			}
 		} else {
-			// Fallback to default if no provider configured
+			
 			err = services.SendSMS(job.Phone, job.OTP)
 		}
 
 		if err != nil {
 
-			// Metrics
+			
 			metrics.IncrementSMSFailed()
 
 			log.Println(
@@ -114,10 +114,10 @@ func StartSMSWorker() {
 				err,
 			)
 
-			// Increment retry count
+			
 			job.RetryCount++
 
-			// Retry if limit not reached
+			
 			if job.RetryCount <= services.MaxRetries {
 
 				log.Printf(
@@ -139,7 +139,7 @@ func StartSMSWorker() {
 				continue
 			}
 
-			// Move to DLQ
+			
 			log.Println(
 				"Max retries reached. Moving to DLQ",
 			)
@@ -157,7 +157,7 @@ func StartSMSWorker() {
 			continue
 		}
 
-		// Metrics
+		
 		metrics.IncrementSMSSuccess()
 
 		fmt.Printf(

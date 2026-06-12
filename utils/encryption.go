@@ -12,7 +12,7 @@ import (
 func getSecretKey() []byte {
 	key := os.Getenv("AES_SECRET_KEY")
 	if key == "" {
-		// Provide a default 32-byte fallback for dev if env is missing
+		
 		key = "12345678901234567890123456789012"
 	}
 	return []byte(key)
