@@ -88,7 +88,7 @@ func main() {
 If using REST API Mode:
 
 1. Register an admin/tenant account via `POST /api/v1/auth/register` and `POST /api/v1/auth/login`.
-2. Grab the JWT `token`, and create an API Key `POST /api/v1/api-keys` utilizing `Authorization: Bearer <token>`.
+2. Grab the JWT `token`, and create an API Key `POST /api/v1/apikey/create` utilizing `Authorization: Bearer <token>`.
 3. Use the newly issued `x-api-key: api_live_xx...` to issue OTP generation events `POST /api/v1/otp/send`.
 
 If using Embedded Library Mode:
@@ -101,13 +101,21 @@ apiKey, err := server.CreateAPIKey("your_user_id")
 Instead of forcing all API traffic through a single global Twilio account, your customers can define their own logic.
 
 Via REST:
-`POST /api/v1/providers/`
+`POST /api/v1/providers/twilio`
 ```json
 {
-    "provider": "twilio",
-    "account_sid": "ACyour_customer_sid",
-    "auth_token": "their_secret_token",
-    "phone_number": "+123..."
+    "sid": "ACyour_customer_sid",
+    "token": "their_secret_token",
+    "phone": "+123..."
+}
+```
+
+`POST /api/v1/providers/aws`
+```json
+{
+    "accessKey": "AKIA...",
+    "secretKey": "their_secret_key",
+    "region": "us-east-1"
 }
 ```
 
