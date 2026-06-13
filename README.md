@@ -16,7 +16,7 @@ This framework allows you to easily embed a scalable OTP generation/verification
 ## Installation
 
 ```sh
-go get github.com/bxbx1205/go-otp-framework
+go get github.com/bxbx1205/go-otp-framework@latest
 ```
 
 ## Quick Start Example
