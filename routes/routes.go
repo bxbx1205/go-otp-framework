@@ -14,15 +14,11 @@ func SetupRoutes(router *gin.Engine) {
 		handlers.HealthCheck,
 	)
 
-	router.GET(
-		"/dlq",
-		handlers.GetDLQ,
-	)
-
-	router.GET(
-		"/metrics",
-		handlers.GetMetrics,
-	)
+	apiV1 := router.Group("/api/v1")
+	{
+		apiV1.GET("/dlq", handlers.GetDLQ)
+		apiV1.GET("/metrics", handlers.GetMetrics)
+	}
 
 	router.GET(
 		"/queue-status",
@@ -71,10 +67,10 @@ func SetupRoutes(router *gin.Engine) {
 		authRoutes.POST("/login", handlers.Login)
 	}
 
-	apiKeyRoutes := router.Group("api/v1/api-keys")
+	apiKeyRoutes := router.Group("api/v1/apikey")
 	apiKeyRoutes.Use(middleware.AuthMiddleware())
 	{
-		apiKeyRoutes.POST("/", handlers.CreateAPIKey)
+		apiKeyRoutes.POST("/create", handlers.CreateAPIKey)
 		apiKeyRoutes.GET("/", handlers.ListAPIKeys)
 		apiKeyRoutes.DELETE("/:key", handlers.RevokeAPIKey)
 	}
@@ -82,6 +78,8 @@ func SetupRoutes(router *gin.Engine) {
 	providerRoutes := router.Group("api/v1/providers")
 	providerRoutes.Use(middleware.AuthMiddleware())
 	{
+		providerRoutes.POST("/twilio", handlers.AddTwilioProvider)
+		providerRoutes.POST("/aws", handlers.AddAWSProvider)
 		providerRoutes.POST("/", handlers.UpsertProvider)
 		providerRoutes.GET("/", handlers.ListProviders)
 		providerRoutes.DELETE("/:provider", handlers.DeleteProvider)

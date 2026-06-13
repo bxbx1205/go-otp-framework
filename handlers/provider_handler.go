@@ -52,3 +52,61 @@ func DeleteProvider(c *gin.Context) {
 
 	utils.SuccessResponse(c, http.StatusOK, "provider deleted", nil)
 }
+
+func AddTwilioProvider(c *gin.Context) {
+	userID := c.GetString("user_id")
+
+	var input struct {
+		SID   string `json:"sid" binding:"required"`
+		Token string `json:"token" binding:"required"`
+		Phone string `json:"phone" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	req := models.UpsertProviderRequest{
+		Provider:    "twilio",
+		AccountSID:  input.SID,
+		AuthToken:   input.Token,
+		PhoneNumber: input.Phone,
+	}
+
+	if err := services.UpsertProvider(userID, req); err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "twilio provider added successfully", nil)
+}
+
+func AddAWSProvider(c *gin.Context) {
+	userID := c.GetString("user_id")
+
+	var input struct {
+		AccessKey string `json:"accessKey" binding:"required"`
+		SecretKey string `json:"secretKey" binding:"required"`
+		Region    string `json:"region" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	req := models.UpsertProviderRequest{
+		Provider:  "aws",
+		AccessKey: input.AccessKey,
+		SecretKey: input.SecretKey,
+		Region:    input.Region,
+	}
+
+	if err := services.UpsertProvider(userID, req); err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "aws provider added successfully", nil)
+}
