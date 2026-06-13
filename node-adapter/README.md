@@ -1,77 +1,95 @@
 # @bxbx/go-otp-framework
 
-A lightweight Node.js/TypeScript adapter for the Go OTP Framework.
+The official Node.js SDK for the Go OTP Framework. Send SMS, verify OTPs, and manage your infrastructure in under 30 seconds.
 
-## Overview
+## Quick Start
 
-This package acts as a thin HTTP transport layer around the existing Go OTP Framework backend. It contains no duplicated business logic. The Go backend remains the single source of truth for all integrations.
+The simplest way to get started:
 
-## Installation
-
-```bash
-npm install @bxbx/go-otp-framework
-```
-
-## Usage
-
-```typescript
+```js
 import { OTPClient } from "@bxbx/go-otp-framework";
 
+const otp = new OTPClient({
+  baseURL: "http://localhost:8080",
+  twilio: {
+    sid: "AC...",
+    token: "...",
+    phone: "+1234567890"
+  }
+});
+
+await otp.sendOTP("+919876543210");
+await otp.verifyOTP("+919876543210", "123456");
+```
+
+## Quick Setup (Programmatic)
+
+If you need to configure your provider later in your app's lifecycle:
+
+```ts
+// Configure Twilio
+await otp.quickSetup({
+  provider: "twilio",
+  sid: "AC...",
+  token: "...",
+  phone: "+1234567890"
+});
+
+// Configure AWS SNS
+await otp.quickSetup({
+  provider: "aws",
+  accessKey: "AKIA...",
+  secretKey: "...",
+  region: "ap-south-1"
+});
+```
+
+---
+
+## Advanced Configuration
+
+For infrastructure management, authentication, and monitoring.
+
+### Setup and Health
+
+```typescript
 const otp = new OTPClient({
   baseURL: "http://localhost:8080",
   apiKey: "api_live_xxx", // Optional: Programmatic API key
   jwt: "eyJhbGci...", // Optional: JWT for authenticated user routes
 });
 
-async function run() {
-  // Check health
-  console.log(await otp.health());
+// Check health
+console.log(await otp.health());
+```
 
-  // Send an OTP
-  await otp.sendOTP("+919876543210");
+### Provider Management (Manual)
+Instead of `quickSetup`, you can explicitly add providers:
+```typescript
+await otp.addTwilio({ sid: "AC...", token: "...", phone: "+1..." });
+await otp.addAWS({ accessKey: "AKIA...", secretKey: "...", region: "us-east-1" });
+```
 
-  // Verify an OTP
-  await otp.verifyOTP("+919876543210", "123456");
+### Identity & Access Management
+```typescript
+// Register User
+await otp.register({ email: "test@example.com", password: "password123" });
 
-  // Add Twilio Provider
-  await otp.addTwilio({
-    sid: "ACxxx",
-    token: "tokenxxx",
-    phone: "+1234567890",
-  });
+// Login User
+await otp.login({ email: "test@example.com", password: "password123" });
 
-  // Add AWS Provider
-  await otp.addAWS({
-    accessKey: "AKIAxxx",
-    secretKey: "secretxxx",
-    region: "us-east-1",
-  });
+// Create an API Key for automated access
+await otp.createAPIKey("user_obj_id");
+```
 
-  // Create API Key
-  await otp.createAPIKey("user_obj_id");
+### Monitoring
+```typescript
+// View aggregate metrics
+console.log(await otp.getMetrics());
 
-  // Register
-  await otp.register({
-    email: "test@example.com",
-    password: "password123",
-  });
-
-  // Login
-  await otp.login({
-    email: "test@example.com",
-    password: "password123",
-  });
-
-  // Get Metrics
-  console.log(await otp.getMetrics());
-
-  // Get Dead Letter Queue (DLQ)
-  console.log(await otp.getDLQ());
-}
-
-run();
+// Inspect the Dead Letter Queue for failed deliveries
+console.log(await otp.getDLQ());
 ```
 
 ## Authentication Headers
-
-The client will automatically inject `x-api-key: <apiKey>` and `Authorization: Bearer <jwt>` if those respective properties are passed into the `OTPClientConfig`.
+The client will automatically inject `x-api-key: <apiKey>` and `Authorization: Bearer <jwt>` if those properties are passed into the `OTPClientConfig`.

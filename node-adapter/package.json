@@ -1,6 +1,6 @@
 {
   "name": "@bxbx/go-otp-framework",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "TypeScript adapter for the Go OTP Framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,7 +14,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "ts-node tests/client.test.ts"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.12.7",
+    "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }
 }

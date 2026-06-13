@@ -2,6 +2,8 @@ export interface OTPClientConfig {
   baseURL: string;
   apiKey?: string;
   jwt?: string;
+  twilio?: TwilioConfig;
+  aws?: AWSConfig;
 }
 
 export interface OTPResponse {
@@ -25,6 +27,10 @@ export interface AWSConfig {
   secretKey: string;
   region: string;
 }
+
+export type QuickSetupConfig = 
+  | ({ provider: "twilio" } & TwilioConfig)
+  | ({ provider: "aws" } & AWSConfig);
 
 export interface RegisterRequest {
   email: string;
