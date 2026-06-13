@@ -1,6 +1,6 @@
 package models
 
-type VerifyOTPRequest struct{
+type VerifyOTPRequest struct {
 	Phone string `json:"phone"`
 
 	OTP string `json:"otp"`

@@ -71,7 +71,7 @@ func GetProviderStatus(
 		http.StatusOK,
 		gin.H{
 			"provider": provider,
-			"status": "active",
+			"status":   "active",
 		},
 	)
 }
@@ -100,23 +100,17 @@ func AdminStats(
 		gin.H{
 			"users": len(users),
 
-			"otp_sent":
-				metrics.OTPSent,
+			"otp_sent": metrics.OTPSent,
 
-			"otp_verified":
-				metrics.OTPVerified,
+			"otp_verified": metrics.OTPVerified,
 
-			"sms_success":
-				metrics.SMSSuccess,
+			"sms_success": metrics.SMSSuccess,
 
-			"sms_failed":
-				metrics.SMSFailed,
+			"sms_failed": metrics.SMSFailed,
 
-			"queue_size":
-				queueSize,
+			"queue_size": queueSize,
 
-			"dlq_size":
-				dlqSize,
+			"dlq_size": dlqSize,
 		},
 	)
 }

@@ -15,7 +15,7 @@ func ConnectRedis(addr string) {
 
 	client := redis.NewClient(&redis.Options{
 		Addr:     addr,
-		Password: "", 
+		Password: "",
 		DB:       0,
 	})
 

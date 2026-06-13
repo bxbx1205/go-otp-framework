@@ -32,7 +32,8 @@ package main
 
 import (
 	"log"
-	otp "github.com/bxbx1205/go-otp-framework"
+
+	"github.com/bxbx1205/go-otp-framework"
 )
 
 func main() {
@@ -66,7 +67,8 @@ package main
 
 import (
 	"log"
-	otp "github.com/bxbx1205/go-otp-framework"
+
+	"github.com/bxbx1205/go-otp-framework"
 )
 
 func main() {

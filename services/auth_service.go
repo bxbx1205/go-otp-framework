@@ -12,7 +12,7 @@ import (
 )
 
 func RegisterUser(req models.RegisterRequest) error {
-	
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
@@ -28,18 +28,16 @@ func RegisterUser(req models.RegisterRequest) error {
 }
 
 func LoginUser(req models.LoginRequest) (string, error) {
-	
+
 	user, err := repositories.FindByEmail(req.Email)
 	if err != nil {
 		return "", errors.New("invalid credentials")
 	}
 
-	
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
 	if err != nil {
 		return "", errors.New("invalid credentials")
 	}
 
-	
 	return utils.GenerateJWT(user.ID.Hex())
 }

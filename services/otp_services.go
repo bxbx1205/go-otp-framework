@@ -251,8 +251,6 @@ func VerifyOTP(
 
 	repositories.CreateOTPLog(successLog)
 
-	
-	
 	token := "valid"
 
 	return token, nil

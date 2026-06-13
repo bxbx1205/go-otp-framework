@@ -17,22 +17,22 @@ func GenerateOTP() string {
 	return fmt.Sprintf("%d", otp)
 }
 
-func HashOTP(otp string) (string,error){
+func HashOTP(otp string) (string, error) {
 
-	otpBytes:=[]byte(otp)
+	otpBytes := []byte(otp)
 
-	hashedOTP,err := bcrypt.GenerateFromPassword(
+	hashedOTP, err := bcrypt.GenerateFromPassword(
 		otpBytes,
 		bcrypt.DefaultCost,
 	)
 
-	if err!=nil {
+	if err != nil {
 		return "", err
 	}
 	return string(hashedOTP), nil
 }
 
-func CompareOTP(hashedOTP string,plainOTP string) (error) {
+func CompareOTP(hashedOTP string, plainOTP string) error {
 	return bcrypt.CompareHashAndPassword(
 		[]byte(hashedOTP),
 		[]byte(plainOTP),
