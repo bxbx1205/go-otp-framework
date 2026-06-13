@@ -2,10 +2,9 @@ package utils
 
 import (
 	"log"
-
 )
 
-func Info(message string){
+func Info(message string) {
 
 	log.Println(
 		"[INFO]",
@@ -13,7 +12,7 @@ func Info(message string){
 	)
 }
 
-func Error(message string){
+func Error(message string) {
 
 	log.Println(
 		"[ERROR]",

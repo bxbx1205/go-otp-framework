@@ -12,7 +12,7 @@ import (
 func getSecretKey() []byte {
 	key := os.Getenv("AES_SECRET_KEY")
 	if key == "" {
-		
+
 		key = "12345678901234567890123456789012"
 	}
 	return []byte(key)

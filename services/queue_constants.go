@@ -1,10 +1,9 @@
 package services
 
-const(
-	
-	SMSQueue="sms_queue"
+const (
+	SMSQueue = "sms_queue"
 
-	SMSDLQ="sms_dlq"
+	SMSDLQ = "sms_dlq"
 
 	MaxRetries = 3
 )

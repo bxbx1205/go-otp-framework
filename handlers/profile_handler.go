@@ -13,8 +13,7 @@ func Profile(
 	c.JSON(
 		http.StatusOK,
 		gin.H{
-			"message":
-				"Protected Route Accessed",
+			"message": "Protected Route Accessed",
 		},
 	)
 }

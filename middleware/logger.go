@@ -7,13 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func LoggerMiddleware() gin.HandlerFunc{
-	return  func(c *gin.Context) {
-		startTime:=time.Now()
+func LoggerMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		startTime := time.Now()
 
 		c.Next()
 
-		duration:= time.Since(startTime)
+		duration := time.Since(startTime)
 
 		log.Printf(
 			"%s | %s | %d | %v",

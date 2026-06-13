@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"net/http"
 	"github.com/bxbx1205/go-otp-framework/models"
 	"github.com/bxbx1205/go-otp-framework/services"
 	"github.com/bxbx1205/go-otp-framework/utils"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )

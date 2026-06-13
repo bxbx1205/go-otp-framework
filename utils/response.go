@@ -1,9 +1,8 @@
 package utils
 
 import (
-	"net/http"
 	"github.com/gin-gonic/gin"
-	
+	"net/http"
 )
 
 func SuccessResponse(
@@ -11,11 +10,11 @@ func SuccessResponse(
 	statusCode int,
 	message string,
 	data interface{},
-){
-	c.JSON(statusCode,gin.H{
+) {
+	c.JSON(statusCode, gin.H{
 		"success": true,
 		"message": message,
-		"data":data,
+		"data":    data,
 	})
 }
 
@@ -23,13 +22,12 @@ func ErrorResponse(
 	c *gin.Context,
 	statusCode int,
 	message string,
-){
-	c.JSON(statusCode,gin.H{
-		"success":false,
-		"message":message,
+) {
+	c.JSON(statusCode, gin.H{
+		"success": false,
+		"message": message,
 	})
 }
-
 
 func InternalServerError(c *gin.Context) {
 

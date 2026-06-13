@@ -20,7 +20,6 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		
 		if len(tokenString) > 7 && tokenString[:7] == "Bearer " {
 			tokenString = tokenString[7:]
 		}
@@ -38,7 +37,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 			if userID, ok := claims["user_id"].(string); ok {
 				c.Set("user_id", userID)
-			} else if phone, ok := claims["phone"].(string); ok { 
+			} else if phone, ok := claims["phone"].(string); ok {
 				c.Set("phone", phone)
 			}
 		}
