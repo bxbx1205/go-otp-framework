@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/bxbx1205/go-otp-framework/config"
 	"github.com/bxbx1205/go-otp-framework/metrics"
@@ -27,6 +28,7 @@ const (
 )
 
 func SendOTP(userID string, phone string) error {
+	phone = strings.TrimSpace(phone)
 
 	rateKey := fmt.Sprintf(
 		"rate:%s:%s",
@@ -144,6 +146,9 @@ func VerifyOTP(
 	phone string,
 	enteredOTP string,
 ) (string, error) {
+
+	phone = strings.TrimSpace(phone)
+	enteredOTP = strings.TrimSpace(enteredOTP)
 
 	key := fmt.Sprintf(
 		"otp:%s:%s",
