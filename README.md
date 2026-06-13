@@ -16,8 +16,25 @@ This framework allows you to easily embed a scalable OTP generation/verification
 ## Installation
 
 ```sh
-go get github.com/bxbx1205/go-otp-framework@latest
+go get github.com/bxbx1205/go-otp-framework@v1.6.6
 ```
+
+## Setup Dependencies (Docker)
+
+Before running the server or executing embedded Go code, you must have MongoDB and Redis instances running. The easiest way to get started is by using the provided `docker-compose.yml`:
+
+```sh
+# Copy the environment template
+cp .env.example .env
+
+# Spin up MongoDB, Redis, and the OTP framework server
+docker-compose up -d
+```
+
+Once Docker is running, the services will be available at:
+- **MongoDB**: `mongodb://admin:password@localhost:27017`
+- **Redis**: `localhost:6379`
+- **REST API** (if started via Docker): `http://localhost:8080`
 
 ## Quick Start Example
 
@@ -39,7 +56,7 @@ import (
 func main() {
 	// Initialize framework using the Builder pattern
 	server := otp.New().
-		WithMongo("mongodb://localhost:27017").
+		WithMongo("mongodb://admin:password@localhost:27017").
 		WithRedis("localhost:6379").
 		WithTwilio("AC_xxxx", "AUTH_TOKEN", "+12345678").
 		WithAWS("AWS_KEY", "AWS_SECRET", "us-east-1")
@@ -74,7 +91,7 @@ import (
 func main() {
 	// Initialize framework
 	server := otp.New().
-		WithMongo("mongodb://localhost:27017").
+		WithMongo("mongodb://admin:password@localhost:27017").
 		WithRedis("localhost:6379")
 
 	// Start the Server on :8080 (also initializes dependencies)
